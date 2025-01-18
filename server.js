@@ -39,7 +39,9 @@ const fratRoutes = require('./routes/fratRoutes');
 const brotherRoutes = require('./routes/brotherRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const rusheeRoutes = require('./routes/rusheeRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
 
+app.use('/api/upload', uploadRoutes);
 app.use('/api/frats', fratRoutes);
 app.use('/api/brothers', brotherRoutes);
 app.use('/api/events', eventRoutes);
