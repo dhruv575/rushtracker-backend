@@ -4,7 +4,7 @@ const upload = require('../middleware/upload');
 const cloudinary = require('../config/cloudinary');
 const { auth } = require('../middleware/auth');
 
-router.post('/image', auth, upload.single('image'), async (req, res) => {
+router.post('/image', upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({
