@@ -213,7 +213,7 @@ const rusheeController = {
   addNote: async (req, res) => {
     try {
       const { fraternity } = req.query;
-      const { content } = req.body;
+      const { content, isAnonymous } = req.body;
 
       if (!fraternity) {
         return res.status(400).json({ success: false, error: 'Fraternity is required' });
@@ -230,7 +230,7 @@ const rusheeController = {
 
       rushee.notes.push({
         content,
-        author: req.brother._id,
+        author: isAnonymous ? '67916981164a21edd7b049e2' : req.brother._id,
       });
 
       await rushee.save();
