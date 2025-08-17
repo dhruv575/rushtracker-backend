@@ -70,6 +70,17 @@ mongoose.connection.on('disconnected', () => {
   console.log('MongoDB disconnected');
 });
 
+// Root endpoint for deployment verification
+app.get('/', (req, res) => {
+  res.json({
+    status: 'success',
+    message: 'Rushtracker Backend Server is Live and Running! 🚀',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    version: '1.0.0'
+  });
+});
+
 // Basic route
 app.get('/api', (req, res) => {
   res.json({ message: 'Welcome to Rushtracker API' });
