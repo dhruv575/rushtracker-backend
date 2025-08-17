@@ -7,10 +7,18 @@ const upload = multer({
     fileSize: 5 * 1024 * 1024 // 5MB limit
   },
   fileFilter: (req, file, cb) => {
+    // Accept standard image types
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);
+    }
+    // Accept HEIC files (iPhone default format)
+    else if (file.mimetype === 'image/heic' || 
+             file.mimetype === 'image/heif' ||
+             file.originalname.toLowerCase().endsWith('.heic') ||
+             file.originalname.toLowerCase().endsWith('.heif')) {
+      cb(null, true);
     } else {
-      cb(new Error('Not an image! Please upload an image.'), false);
+      cb(new Error('Not an image! Please upload an image file (JPEG, PNG, HEIC, etc.).'), false);
     }
   }
 });

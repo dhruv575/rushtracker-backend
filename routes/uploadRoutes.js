@@ -9,7 +9,7 @@ router.post('/image', upload.single('image'), async (req, res) => {
     if (!req.file) {
       return res.status(400).json({
         success: false,
-        error: 'No image file provided'
+        error: 'No image file provided. Please select a valid image file (JPEG, PNG, HEIC, etc.).'
       });
     }
 
