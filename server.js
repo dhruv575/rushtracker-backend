@@ -114,10 +114,41 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
+// Catch-all route for undefined endpoints
+app.use('*', (req, res) => {
+  res.status(404).json({
+    status: 'error',
+    message: `Route ${req.originalUrl} not found`,
+    availableEndpoints: [
+      'GET /',
+      'GET /api',
+      'GET /api/health',
+      'POST /api/upload/image',
+      'GET /api/frats',
+      'GET /api/brothers',
+      'GET /api/events',
+      'GET /api/rushees'
+    ]
+  });
+});
+
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`🚀 Rushtracker Backend Server is running on port ${PORT}`);
+  console.log(`📡 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🌐 Server URL: http://localhost:${PORT}`);
+});
+
+// Error handling for unhandled promise rejections
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Promise Rejection:', err);
+});
+
+// Error handling for uncaught exceptions
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+  process.exit(1);
 });
 
 // Handle process termination
