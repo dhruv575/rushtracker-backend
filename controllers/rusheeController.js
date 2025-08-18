@@ -230,7 +230,7 @@ const rusheeController = {
 
       rushee.notes.push({
         content,
-        author: isAnonymous ? '67916981164a21edd7b049e2' : req.brother._id,
+        author: isAnonymous ? '68a3bb6f52011fec8272d474' : req.brother._id,
       });
 
       await rushee.save();
