@@ -231,6 +231,8 @@ const rusheeController = {
       rushee.notes.push({
         content,
         author: isAnonymous ? '68a3bb6f52011fec8272d474' : req.brother._id,
+        upvotes: [],
+        downvotes: []
       });
 
       await rushee.save();
@@ -301,6 +303,139 @@ const rusheeController = {
       res.json({ success: true, data: rushee.tags });
     } catch (error) {
       res.status(500).json({ success: false, error: error.message });
+    }
+  },
+
+  // Upvote a note
+  upvoteNote: async (req, res) => {
+    try {
+      const { rusheeId, noteIndex } = req.params;
+      const { fraternity } = req.query;
+      const brotherId = req.brother._id;
+
+      if (!fraternity) {
+        return res.status(400).json({ success: false, error: 'Fraternity is required' });
+      }
+
+      const rushee = await Rushee.findOne({ _id: rusheeId, fraternity });
+      if (!rushee) {
+        return res.status(404).json({ success: false, error: 'Rushee not found for this fraternity' });
+      }
+
+      const noteIndexNum = parseInt(noteIndex);
+      if (noteIndexNum < 0 || noteIndexNum >= rushee.notes.length) {
+        return res.status(404).json({ success: false, error: 'Note not found' });
+      }
+
+      const note = rushee.notes[noteIndexNum];
+
+      // Check if user already upvoted
+      if (note.upvotes.includes(brotherId)) {
+        return res.status(400).json({ success: false, error: 'Already upvoted this note' });
+      }
+
+      // Remove from downvotes if present
+      const downvoteIndex = note.downvotes.indexOf(brotherId);
+      if (downvoteIndex !== -1) {
+        note.downvotes.splice(downvoteIndex, 1);
+      }
+
+      // Add to upvotes
+      note.upvotes.push(brotherId);
+
+      await rushee.save();
+      const populatedRushee = await rushee.populate('notes.author', 'name email');
+      res.json({ success: true, data: populatedRushee });
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  },
+
+  // Downvote a note
+  downvoteNote: async (req, res) => {
+    try {
+      const { rusheeId, noteIndex } = req.params;
+      const { fraternity } = req.query;
+      const brotherId = req.brother._id;
+
+      if (!fraternity) {
+        return res.status(400).json({ success: false, error: 'Fraternity is required' });
+      }
+
+      const rushee = await Rushee.findOne({ _id: rusheeId, fraternity });
+      if (!rushee) {
+        return res.status(404).json({ success: false, error: 'Rushee not found for this fraternity' });
+      }
+
+      const noteIndexNum = parseInt(noteIndex);
+      if (noteIndexNum < 0 || noteIndexNum >= rushee.notes.length) {
+        return res.status(404).json({ success: false, error: 'Note not found' });
+      }
+
+      const note = rushee.notes[noteIndexNum];
+
+      // Check if user already downvoted
+      if (note.downvotes.includes(brotherId)) {
+        return res.status(400).json({ success: false, error: 'Already downvoted this note' });
+      }
+
+      // Remove from upvotes if present
+      const upvoteIndex = note.upvotes.indexOf(brotherId);
+      if (upvoteIndex !== -1) {
+        note.upvotes.splice(upvoteIndex, 1);
+      }
+
+      // Add to downvotes
+      note.downvotes.push(brotherId);
+
+      await rushee.save();
+      const populatedRushee = await rushee.populate('notes.author', 'name email');
+      res.json({ success: true, data: populatedRushee });
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  },
+
+  // Remove vote from a note (unvote)
+  removeVote: async (req, res) => {
+    try {
+      const { rusheeId, noteIndex } = req.params;
+      const { fraternity } = req.query;
+      const brotherId = req.brother._id;
+
+      if (!fraternity) {
+        return res.status(400).json({ success: false, error: 'Fraternity is required' });
+      }
+
+      const rushee = await Rushee.findOne({ _id: rusheeId, fraternity });
+      if (!rushee) {
+        return res.status(404).json({ success: false, error: 'Rushee not found for this fraternity' });
+      }
+
+      const noteIndexNum = parseInt(noteIndex);
+      if (noteIndexNum < 0 || noteIndexNum >= rushee.notes.length) {
+        return res.status(404).json({ success: false, error: 'Note not found' });
+      }
+
+      const note = rushee.notes[noteIndexNum];
+
+      // Remove from upvotes if present
+      const upvoteIndex = note.upvotes.indexOf(brotherId);
+      if (upvoteIndex !== -1) {
+        note.upvotes.splice(upvoteIndex, 1);
+      }
+
+      // Remove from downvotes if present
+      const downvoteIndex = note.downvotes.indexOf(brotherId);
+      if (downvoteIndex !== -1) {
+        note.downvotes.splice(downvoteIndex, 1);
+      }
+
+      await rushee.save();
+      const populatedRushee = await rushee.populate('notes.author', 'name email');
+      res.json({ success: true, data: populatedRushee });
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
     }
   },
       

@@ -15,7 +15,15 @@ const noteSchema = new mongoose.Schema({
   timestamp: {
     type: Date,
     default: Date.now
-  }
+  },
+  upvotes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Brother'
+  }],
+  downvotes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Brother'
+  }]
 }, { _id: false });
 
 // Schema for Vouches

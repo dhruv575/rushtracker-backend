@@ -19,5 +19,8 @@ router.get('/:rusheeId', rusheeController.getRusheeById);
 router.delete('/:rusheeId', rusheeController.deleteRushee);
 router.post('/:rusheeId/notes', rusheeController.addNote);
 router.patch('/:rusheeId/status', rusheeController.updateStatus);
+router.post('/:rusheeId/notes/:noteIndex/upvote', rusheeController.upvoteNote); // Upvote a note
+router.post('/:rusheeId/notes/:noteIndex/downvote', rusheeController.downvoteNote); // Downvote a note
+router.delete('/:rusheeId/notes/:noteIndex/vote', rusheeController.removeVote); // Remove vote from a note
 
 module.exports = router;
