@@ -344,7 +344,14 @@ const rusheeController = {
       note.upvotes.push(brotherId);
 
       await rushee.save();
-      const populatedRushee = await rushee.populate('notes.author', 'name email');
+      const populatedRushee = await rushee.populate({
+        path: 'eventsAttended',
+        select: 'name start end location rusheeForm rusheeSubmissions',
+        populate: {
+          path: 'rusheeSubmissions.rushee',
+          select: 'name email',
+        },
+      }).populate('notes.author', 'name email');
       res.json({ success: true, data: populatedRushee });
     } catch (error) {
       res.status(400).json({ success: false, error: error.message });
@@ -389,7 +396,14 @@ const rusheeController = {
       note.downvotes.push(brotherId);
 
       await rushee.save();
-      const populatedRushee = await rushee.populate('notes.author', 'name email');
+      const populatedRushee = await rushee.populate({
+        path: 'eventsAttended',
+        select: 'name start end location rusheeForm rusheeSubmissions',
+        populate: {
+          path: 'rusheeSubmissions.rushee',
+          select: 'name email',
+        },
+      }).populate('notes.author', 'name email');
       res.json({ success: true, data: populatedRushee });
     } catch (error) {
       res.status(400).json({ success: false, error: error.message });
@@ -432,7 +446,14 @@ const rusheeController = {
       }
 
       await rushee.save();
-      const populatedRushee = await rushee.populate('notes.author', 'name email');
+      const populatedRushee = await rushee.populate({
+        path: 'eventsAttended',
+        select: 'name start end location rusheeForm rusheeSubmissions',
+        populate: {
+          path: 'rusheeSubmissions.rushee',
+          select: 'name email',
+        },
+      }).populate('notes.author', 'name email');
       res.json({ success: true, data: populatedRushee });
     } catch (error) {
       res.status(400).json({ success: false, error: error.message });
