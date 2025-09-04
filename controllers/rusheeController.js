@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Rushee = require('../models/rushee');
 const { RUSHEE_STATUS } = require('../models/types');
 
@@ -311,7 +312,7 @@ const rusheeController = {
     try {
       const { rusheeId, noteIndex } = req.params;
       const { fraternity } = req.query;
-      const brotherId = req.brother._id;
+      const brotherId = new mongoose.Types.ObjectId(req.brother._id);
 
       if (!fraternity) {
         return res.status(400).json({ success: false, error: 'Fraternity is required' });
@@ -344,14 +345,20 @@ const rusheeController = {
       note.upvotes.push(brotherId);
 
       await rushee.save();
-      const populatedRushee = await rushee.populate({
-        path: 'eventsAttended',
-        select: 'name start end location rusheeForm rusheeSubmissions',
-        populate: {
-          path: 'rusheeSubmissions.rushee',
-          select: 'name email',
+      const populatedRushee = await rushee.populate([
+        {
+          path: 'eventsAttended',
+          select: 'name start end location rusheeForm rusheeSubmissions',
+          populate: {
+            path: 'rusheeSubmissions.rushee',
+            select: 'name email',
+          },
         },
-      }).populate('notes.author', 'name email');
+        {
+          path: 'notes.author',
+          select: 'name email',
+        }
+      ]);
       res.json({ success: true, data: populatedRushee });
     } catch (error) {
       res.status(400).json({ success: false, error: error.message });
@@ -363,7 +370,7 @@ const rusheeController = {
     try {
       const { rusheeId, noteIndex } = req.params;
       const { fraternity } = req.query;
-      const brotherId = req.brother._id;
+      const brotherId = new mongoose.Types.ObjectId(req.brother._id);
 
       if (!fraternity) {
         return res.status(400).json({ success: false, error: 'Fraternity is required' });
@@ -396,14 +403,20 @@ const rusheeController = {
       note.downvotes.push(brotherId);
 
       await rushee.save();
-      const populatedRushee = await rushee.populate({
-        path: 'eventsAttended',
-        select: 'name start end location rusheeForm rusheeSubmissions',
-        populate: {
-          path: 'rusheeSubmissions.rushee',
-          select: 'name email',
+      const populatedRushee = await rushee.populate([
+        {
+          path: 'eventsAttended',
+          select: 'name start end location rusheeForm rusheeSubmissions',
+          populate: {
+            path: 'rusheeSubmissions.rushee',
+            select: 'name email',
+          },
         },
-      }).populate('notes.author', 'name email');
+        {
+          path: 'notes.author',
+          select: 'name email',
+        }
+      ]);
       res.json({ success: true, data: populatedRushee });
     } catch (error) {
       res.status(400).json({ success: false, error: error.message });
@@ -415,7 +428,7 @@ const rusheeController = {
     try {
       const { rusheeId, noteIndex } = req.params;
       const { fraternity } = req.query;
-      const brotherId = req.brother._id;
+      const brotherId = new mongoose.Types.ObjectId(req.brother._id);
 
       if (!fraternity) {
         return res.status(400).json({ success: false, error: 'Fraternity is required' });
@@ -446,14 +459,20 @@ const rusheeController = {
       }
 
       await rushee.save();
-      const populatedRushee = await rushee.populate({
-        path: 'eventsAttended',
-        select: 'name start end location rusheeForm rusheeSubmissions',
-        populate: {
-          path: 'rusheeSubmissions.rushee',
-          select: 'name email',
+      const populatedRushee = await rushee.populate([
+        {
+          path: 'eventsAttended',
+          select: 'name start end location rusheeForm rusheeSubmissions',
+          populate: {
+            path: 'rusheeSubmissions.rushee',
+            select: 'name email',
+          },
         },
-      }).populate('notes.author', 'name email');
+        {
+          path: 'notes.author',
+          select: 'name email',
+        }
+      ]);
       res.json({ success: true, data: populatedRushee });
     } catch (error) {
       res.status(400).json({ success: false, error: error.message });
