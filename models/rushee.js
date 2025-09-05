@@ -12,6 +12,10 @@ const noteSchema = new mongoose.Schema({
     ref: 'Brother',
     required: true
   },
+  real_brother: {
+    type: String,
+    required: false
+  },
   timestamp: {
     type: Date,
     default: Date.now

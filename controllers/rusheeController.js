@@ -214,7 +214,7 @@ const rusheeController = {
   addNote: async (req, res) => {
     try {
       const { fraternity } = req.query;
-      const { content, isAnonymous } = req.body;
+      const { content, isAnonymous, real_brother } = req.body;
 
       if (!fraternity) {
         return res.status(400).json({ success: false, error: 'Fraternity is required' });
@@ -232,6 +232,7 @@ const rusheeController = {
       rushee.notes.push({
         content,
         author: isAnonymous ? '68a3bb6f52011fec8272d474' : req.brother._id,
+        real_brother: isAnonymous ? real_brother : undefined,
         upvotes: [],
         downvotes: []
       });
