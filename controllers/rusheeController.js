@@ -479,6 +479,56 @@ const rusheeController = {
       res.status(400).json({ success: false, error: error.message });
     }
   },
+
+  // Delete a note (only for President and Rush Chair)
+  deleteNote: async (req, res) => {
+    try {
+      const { rusheeId, noteIndex } = req.params;
+      const { fraternity } = req.query;
+      const brother = req.brother;
+
+      // Check if user has permission (President or Rush Chair)
+      if (brother.position !== 'President' && brother.position !== 'Rush Chair') {
+        return res.status(403).json({ success: false, error: 'Only Presidents and Rush Chairs can delete notes' });
+      }
+
+      if (!fraternity) {
+        return res.status(400).json({ success: false, error: 'Fraternity is required' });
+      }
+
+      const rushee = await Rushee.findOne({ _id: rusheeId, fraternity });
+      if (!rushee) {
+        return res.status(404).json({ success: false, error: 'Rushee not found for this fraternity' });
+      }
+
+      const noteIndexNum = parseInt(noteIndex);
+      if (noteIndexNum < 0 || noteIndexNum >= rushee.notes.length) {
+        return res.status(404).json({ success: false, error: 'Note not found' });
+      }
+
+      // Remove the note
+      rushee.notes.splice(noteIndexNum, 1);
+
+      await rushee.save();
+      const populatedRushee = await rushee.populate([
+        {
+          path: 'eventsAttended',
+          select: 'name start end location rusheeForm rusheeSubmissions',
+          populate: {
+            path: 'rusheeSubmissions.rushee',
+            select: 'name email',
+          },
+        },
+        {
+          path: 'notes.author',
+          select: 'name email',
+        }
+      ]);
+      res.json({ success: true, data: populatedRushee });
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  },
       
 };
 
